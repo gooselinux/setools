@@ -1,0 +1,33 @@
+diff -up setools-3.3.7/m4/ac_pkg_swig.m4~ setools-3.3.7/m4/ac_pkg_swig.m4
+--- setools-3.3.7/m4/ac_pkg_swig.m4~	2007-02-09 12:32:41.000000000 -0500
++++ setools-3.3.7/m4/ac_pkg_swig.m4	2010-07-13 11:16:11.000000000 -0400
+@@ -106,10 +106,13 @@ AC_DEFUN([AC_PROG_SWIG],[
+                         if test -z "$available_patch" ; then
+                                 [available_patch=0]
+                         fi
+-                        if test $available_major -ne $required_major \
+-                                -o $available_minor -ne $required_minor \
+-                                -o $available_patch -lt $required_patch ; then
+-                                AC_MSG_WARN([SWIG version >= $1 is required.  You have $swig_version.  You should look at http://www.swig.org])
++			if test $available_major -lt $required_major \
++			    -o \( $available_major -eq $required_major \
++			        -a $available_minor -lt $required_minor \) \
++			    -o \( $available_major -eq $required_major \
++			        -a $available_minor -eq $required_minor \
++			        -a $available_patch -lt $required_patch \) ; then
++                                AC_MSG_WARN([SWIG version >= $1 is required. You have $swig_version.  You should look at http://www.swig.org])
+                                 SWIG='echo "Error: SWIG version >= $1 is required.  You have '"$swig_version"'.  You should look at http://www.swig.org" ; false'
+                         else
+                                 AC_MSG_NOTICE([SWIG executable is '$SWIG'])
+diff -up setools-3.3.7/libqpol/src/avrule_query.c~ setools-3.3.7/libqpol/src/avrule_query.c
+--- setools-3.3.7/libqpol/src/avrule_query.c~	2010-04-23 12:22:08.000000000 -0400
++++ setools-3.3.7/libqpol/src/avrule_query.c	2010-07-13 11:40:16.000000000 -0400
+@@ -57,8 +57,6 @@ int qpol_policy_get_avrule_iter(const qp
+ 
+ 	if ((rule_type_mask & QPOL_RULE_NEVERALLOW) && !qpol_policy_has_capability(policy, QPOL_CAP_NEVERALLOW)) {
+ 		ERR(policy, "%s", "Cannot get avrules: Neverallow rules requested but not available");
+-		errno = ENOTSUP;
+-		return STATUS_ERR;
+ 	}
+ 
+ 	db = &policy->p->p;
